@@ -12,14 +12,16 @@ Your SMS Gateway is now running on Google Cloud VM with the following details:
 
 ### 🔐 **Access Credentials**
 - **Username**: `admin`
-- **Password**: `VhYK9Ho8I7cNPWGnypNRwO+PLypHQhStxyMLNiCzobk=`
-- **URL-encoded Password**: `VhYK9Ho8I7cNPWGnypNRwO%2BPLypHQhStxyMLNiCzobk%3D`
+- **Password**: `[REDACTED - See Security Section Below]`
+- **URL-encoded Password**: `[REDACTED - See Security Section Below]`
+
+**⚠️ SECURITY WARNING**: Real credentials are not shown in this public repository for security reasons. See the Security section below for proper credential management.
 
 ## 🚀 **Quick Start**
 
 ### **Send Your First SMS**
 ```bash
-curl "http://34.56.36.182:1401/send?username=admin&password=VhYK9Ho8I7cNPWGnypNRwO%2BPLypHQhStxyMLNiCzobk%3D&to=+1234567890&content=Hello%20World"
+curl "http://34.56.36.182:1401/send?username=admin&password=YOUR_PASSWORD&to=+1234567890&content=Hello%20World"
 ```
 
 ### **Check Gateway Status**
@@ -55,7 +57,7 @@ curl "http://34.56.36.182:1401/ping"
 Your SMS Gateway is accessible from anywhere on the internet:
 
 - **HTTP API**: `http://34.56.36.182:1401`
-- **Send SMS**: `http://34.56.36.182:1401/send?username=admin&password=VhYK9Ho8I7cNPWGnypNRwO%2BPLypHQhStxyMLNiCzobk%3D&to=PHONE&content=MESSAGE`
+- **Send SMS**: `http://34.56.36.182:1401/send?username=admin&password=YOUR_PASSWORD&to=PHONE&content=MESSAGE`
 - **Status**: `http://34.56.36.182:1401/status`
 - **Ping**: `http://34.56.36.182:1401/ping`
 
@@ -66,10 +68,10 @@ Your SMS Gateway is accessible from anywhere on the internet:
 import requests
 
 def send_sms(phone_number, message):
-    url = "http://34.56.36.182:1401/send"
+    url =http://34.56.36.182:1401/send"
     params = {
         'username': 'admin',
-        'password': 'VhYK9Ho8I7cNPWGnypNRwO+PLypHQhStxyMLNiCzobk=',
+        'password': 'YOUR_PASSWORD',
         'to': phone_number,
         'content': message
     }
@@ -87,7 +89,7 @@ async function sendSMS(phoneNumber, message) {
     const url = 'http://34.56.36.182:1401/send';
     const params = new URLSearchParams({
         username: 'admin',
-        password: 'VhYK9Ho8I7cNPWGnypNRwO+PLypHQhStxyMLNiCzobk=',
+        password: 'YOUR_PASSWORD',
         to: phoneNumber,
         content: message
     });
@@ -114,7 +116,7 @@ if [ -z "$PHONE_NUMBER" ] || [ -z "$MESSAGE" ]; then
     exit 1
 fi
 
-curl "http://34.56.36.182:1401/send?username=admin&password=VhYK9Ho8I7cNPWGnypNRwO%2BPLypHQhStxyMLNiCzobk%3D&to=$PHONE_NUMBER&content=$MESSAGE"
+curl "http://34.56.36.182:1401/send?username=admin&password=YOUR_PASSWORD&to=$PHONE_NUMBER&content=$MESSAGE"
 ```
 
 ## 📊 **Monitoring Dashboard**
@@ -545,6 +547,31 @@ http://34.56.36.182:1401/status
 
 ## 🔒 **Security & Authentication**
 
+### **⚠️ CRITICAL SECURITY NOTICE**
+**NEVER commit real credentials to public repositories!** This repository uses placeholder credentials for documentation purposes only.
+
+### **Proper Credential Management**
+
+#### **For Production Use:**
+1. **Use Environment Variables:**
+   ```bash
+   export SMS_GATEWAY_USERNAME="admin"
+   export SMS_GATEWAY_PASSWORD="your_secure_password"
+   ```
+
+2. **Use Configuration Files (not in git):**
+   ```bash
+   # Create .env file (add to .gitignore)
+   echo "SMS_GATEWAY_USERNAME=admin" > .env
+   echo "SMS_GATEWAY_PASSWORD=your_secure_password" >> .env
+   ```
+
+3. **Use Secret Management:**
+   - AWS Secrets Manager
+   - Azure Key Vault
+   - HashiCorp Vault
+   - Kubernetes Secrets
+
 ### **Authentication Methods**
 - **HTTP Basic Auth**: Username/password in URL parameters
 - **Secure Passwords**: Randomly generated during installation
@@ -558,6 +585,9 @@ http://34.56.36.182:1401/status
 5. **Keep system updated** with latest security patches
 6. **Use firewall rules** to restrict access
 7. **Regular security audits** of the system
+8. **Never commit credentials** to version control
+9. **Use strong, unique passwords**
+10. **Rotate credentials regularly**
 
 ### **Access Control**
 - **API Access**: Username/password authentication required
