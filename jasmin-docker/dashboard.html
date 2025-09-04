@@ -227,6 +227,9 @@
         <div class="header">
             <h1>📱 SMS Gateway Dashboard</h1>
             <p>Monitor and test your SMS Gateway API</p>
+            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px; margin-top: 10px;">
+                <strong>🔒 Security Notice:</strong> Credentials are stored locally in your browser. Clear them when done for security.
+            </div>
         </div>
         
         <div class="stats">
@@ -275,7 +278,15 @@
                     <div class="status-indicator" id="authStatus"></div>
                     <span id="authText">Testing...</span>
                 </div>
-                <p><strong>Username:</strong> admin</p>
+                <div style="margin: 10px 0;">
+                    <label for="usernameInput">Username:</label>
+                    <input type="text" id="usernameInput" value="admin" style="margin: 5px; padding: 5px; width: 100px;">
+                    <label for="passwordInput">Password:</label>
+                    <input type="password" id="passwordInput" placeholder="Enter password" style="margin: 5px; padding: 5px; width: 150px;">
+                    <button onclick="updateCredentials()" class="btn" style="margin: 5px;">Update</button>
+                    <button onclick="clearCredentials()" class="btn" style="margin: 5px; background: #f44336;">Clear</button>
+                </div>
+                <p><strong>Current Username:</strong> <span id="currentUsername">admin</span></p>
                 <p><strong>Password:</strong> ********</p>
             </div>
         </div>
@@ -309,8 +320,44 @@
 
     <script>
         const GATEWAY_URL = 'http://localhost:8081/proxy';
-        const USERNAME = 'admin';
-        const PASSWORD = 'YOUR_PASSWORD_HERE'; // Replace with actual password
+        
+        // Get credentials from user input or environment
+        let USERNAME = 'admin';
+        let PASSWORD = '';
+        
+        // Check if credentials are provided via URL parameters (for testing)
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlUsername = urlParams.get('username');
+        const urlPassword = urlParams.get('password');
+        
+        if (urlUsername && urlPassword) {
+            USERNAME = urlUsername;
+            PASSWORD = urlPassword;
+        } else {
+            // Try to get from localStorage first
+            const savedUsername = localStorage.getItem('sms_gateway_username');
+            const savedPassword = localStorage.getItem('sms_gateway_password');
+            
+            if (savedUsername && savedPassword) {
+                USERNAME = savedUsername;
+                PASSWORD = savedPassword;
+            } else {
+                // Prompt for credentials if not provided
+                USERNAME = prompt('Enter SMS Gateway Username:', 'admin') || 'admin';
+                PASSWORD = prompt('Enter SMS Gateway Password:', '') || '';
+                
+                if (PASSWORD) {
+                    // Save to localStorage for convenience
+                    localStorage.setItem('sms_gateway_username', USERNAME);
+                    localStorage.setItem('sms_gateway_password', PASSWORD);
+                } else {
+                    alert('Password is required to use the dashboard!');
+                }
+            }
+        }
+        
+        // Update the UI with current credentials
+        document.getElementById('currentUsername').textContent = USERNAME;
         
         let totalCalls = 0;
         let successCalls = 0;
@@ -322,6 +369,58 @@
             document.getElementById('successCalls').textContent = successCalls;
             document.getElementById('errorCalls').textContent = errorCalls;
             document.getElementById('uptime').textContent = Math.floor((Date.now() - startTime) / 60000);
+        }
+        
+        function updateCredentials() {
+            const newUsername = document.getElementById('usernameInput').value;
+            const newPassword = document.getElementById('passwordInput').value;
+            
+            if (!newUsername || !newPassword) {
+                alert('Both username and password are required!');
+                return;
+            }
+            
+            USERNAME = newUsername;
+            PASSWORD = newPassword;
+            
+            // Save to localStorage
+            localStorage.setItem('sms_gateway_username', USERNAME);
+            localStorage.setItem('sms_gateway_password', PASSWORD);
+            
+            // Update UI
+            document.getElementById('currentUsername').textContent = USERNAME;
+            
+            // Clear password input for security
+            document.getElementById('passwordInput').value = '';
+            
+            addLog('Credentials updated successfully', 'success');
+            
+            // Test the new credentials
+            testAuthentication();
+        }
+        
+        function clearCredentials() {
+            if (confirm('Are you sure you want to clear all saved credentials?')) {
+                // Clear localStorage
+                localStorage.removeItem('sms_gateway_username');
+                localStorage.removeItem('sms_gateway_password');
+                
+                // Clear current credentials
+                USERNAME = 'admin';
+                PASSWORD = '';
+                
+                // Clear input fields
+                document.getElementById('usernameInput').value = 'admin';
+                document.getElementById('passwordInput').value = '';
+                
+                // Update UI
+                document.getElementById('currentUsername').textContent = USERNAME;
+                
+                addLog('Credentials cleared successfully', 'info');
+                
+                // Reset authentication status
+                updateStatus('authStatus', 'authText', false, 'No Credentials');
+            }
         }
         
         function addLog(message, type = 'info') {
