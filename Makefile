@@ -74,11 +74,11 @@ test-server:
 	@chmod +x test-real-ubuntu.sh
 	@./test-real-ubuntu.sh
 
-# Deploy to cloud server
+# Deploy to Google Cloud
 deploy:
-	@echo "☁️ Deploying to cloud server..."
-	@chmod +x deploy-cloud.sh
-	@./deploy-cloud.sh
+	@echo "☁️ Deploying to Google Cloud..."
+	@chmod +x deploy-gcp.sh
+	@./deploy-gcp.sh
 
 # Clean installation
 clean:

@@ -9,10 +9,10 @@ A complete, production-ready Jasmin SMS Gateway setup for Ubuntu following the o
 - sudo privileges
 - Internet connection
 
-### One-Command Cloud Deployment
+### One-Command Google Cloud Deployment
 ```bash
-# Deploy to any Ubuntu cloud server:
-curl -s https://raw.githubusercontent.com/Arnobrizwan/Jasmin-SMS-Gateway-setup/main/jasmin-docker/deploy-cloud.sh | bash
+# Deploy to Google Cloud Platform:
+curl -s https://raw.githubusercontent.com/Arnobrizwan/Jasmin-SMS-Gateway-setup/main/jasmin-docker/deploy-gcp.sh | bash
 ```
 
 ### Local Installation

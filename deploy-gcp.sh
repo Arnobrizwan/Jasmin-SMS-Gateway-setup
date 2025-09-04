@@ -1,11 +1,10 @@
 #!/bin/bash
-# Cloud Server Deployment Script for Jasmin SMS Gateway
-# This script helps you deploy on various cloud providers
+# Google Cloud Platform Deployment Script for Jasmin SMS Gateway
 
 set -e
 
-echo "☁️  Jasmin SMS Gateway - Cloud Deployment"
-echo "=========================================="
+echo "☁️  Jasmin SMS Gateway - Google Cloud Deployment"
+echo "================================================"
 
 # Check if running on Ubuntu
 if ! command -v lsb_release &> /dev/null; then
@@ -103,7 +102,7 @@ sudo systemctl enable fail2ban
 SERVER_IP=$(curl -s ifconfig.me || curl -s ipinfo.io/ip || hostname -I | awk '{print $1}')
 
 echo ""
-echo "🎉 Cloud deployment complete!"
+echo "🎉 Google Cloud deployment complete!"
 echo ""
 echo "📱 Access your SMS gateway:"
 echo "  HTTP API: http://$SERVER_IP:1401"
@@ -128,4 +127,3 @@ echo ""
 echo "📚 Documentation:"
 echo "  README.md - Complete usage guide"
 echo "  SECURITY.md - Security best practices"
-echo "  UBUNTU-SERVER-DEPLOY.md - Deployment guide"
