@@ -1,6 +1,6 @@
 # Jasmin SMS Gateway - Ubuntu Setup
 
-.PHONY: help install start stop restart status logs test cli clean test-server
+.PHONY: help install start stop restart status logs test cli clean test-server deploy
 
 # Default target
 help:
@@ -16,6 +16,7 @@ help:
 	@echo "  test         - Test SMS sending"
 	@echo "  cli          - Connect to Management CLI"
 	@echo "  test-server  - Test installation on Ubuntu server"
+	@echo "  deploy       - Deploy to cloud server (one-command)"
 	@echo "  clean        - Remove installation"
 	@echo "  help         - Show this help"
 
@@ -72,6 +73,12 @@ test-server:
 	@echo "🧪 Testing Ubuntu server installation..."
 	@chmod +x test-real-ubuntu.sh
 	@./test-real-ubuntu.sh
+
+# Deploy to cloud server
+deploy:
+	@echo "☁️ Deploying to cloud server..."
+	@chmod +x deploy-cloud.sh
+	@./deploy-cloud.sh
 
 # Clean installation
 clean:
