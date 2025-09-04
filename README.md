@@ -196,15 +196,21 @@ make clean
 ## 🔒 Security
 
 ### Default Credentials
-- **Management CLI**: jcliadmin/jclipwd
-- **RabbitMQ Management**: admin/admin
+- **Management CLI**: jcliadmin/[GENERATED_PASSWORD]
+- **RabbitMQ Management**: admin/[GENERATED_PASSWORD]
+- **Credentials are generated during installation and saved in /etc/jasmin/.env**
 
 ### Security Recommendations
-1. **Change default passwords** immediately
-2. **Configure firewall** rules
-3. **Use HTTPS** in production
-4. **Regular updates** of system packages
-5. **Monitor logs** regularly
+1. **Change default passwords** immediately after installation
+2. **Secure the .env file**: `/etc/jasmin/.env` contains sensitive credentials
+3. **Configure firewall** rules to restrict access
+4. **Use HTTPS** in production environments
+5. **Regular updates** of system packages
+6. **Monitor logs** regularly for suspicious activity
+7. **Never commit** the .env file to version control
+8. **Use strong passwords** for all services
+9. **Enable fail2ban** for additional security
+10. **Regular security audits** of the system
 
 ## 📊 Monitoring
 
@@ -370,12 +376,16 @@ Returns: Prometheus metrics
 4. **Monitoring**: Use cloud monitoring services
 
 ### Security Checklist
-- [ ] Change default passwords
-- [ ] Enable HTTPS
+- [ ] Change all default passwords immediately
+- [ ] Secure the .env file (chmod 600)
+- [ ] Enable HTTPS for production
 - [ ] Configure firewall rules
 - [ ] Set up monitoring alerts
 - [ ] Regular security updates
-- [ ] Backup configuration
+- [ ] Backup configuration securely
+- [ ] Enable fail2ban for intrusion prevention
+- [ ] Regular security audits
+- [ ] Never commit sensitive files to version control
 
 ## 📄 License
 
