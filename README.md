@@ -72,11 +72,36 @@ curl "http://localhost:1401/send?username=foo&password=bar&to=1234567890&content
 ```
 
 #### Via Management CLI
+
+**Option 1: Install Telnet (Recommended)**
 ```bash
+# Install telnet on macOS
+brew install telnet
+
 # Connect to CLI
 telnet localhost 8990
+```
 
-# Login (default: jcliadmin/jclipwd)
+**Option 2: Use Netcat (if telnet not available)**
+```bash
+# Connect using netcat
+nc localhost 8990
+```
+
+**Option 3: Use Docker Exec (Always Works)**
+```bash
+# Connect directly to container
+docker-compose exec jasmin telnet localhost 8990
+```
+
+**Option 4: Use Python Script**
+```bash
+# Use the provided script
+python3 connect-jcli.py
+```
+
+**Login (default: jcliadmin/jclipwd)**
+```
 Username: jcliadmin
 Password: jclipwd
 
