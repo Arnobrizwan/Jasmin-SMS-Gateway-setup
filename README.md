@@ -18,6 +18,16 @@ docker-compose up -d
 # That's it! Your SMS gateway is running
 ```
 
+### With Monitoring (Grafana + Prometheus)
+```bash
+# Start with full monitoring stack
+make monitoring-up
+
+# Access monitoring dashboards
+# Prometheus: http://localhost:9090
+# Grafana: http://localhost:3000 (admin/admin)
+```
+
 ## 📱 Access Your SMS Gateway
 
 ### Local URLs
@@ -25,6 +35,8 @@ docker-compose up -d
 - **Management CLI**: telnet localhost 8990
 - **SMPP Server**: localhost:2775
 - **RabbitMQ Management**: http://localhost:15672 (admin/admin)
+- **Prometheus**: http://localhost:9090 (with monitoring)
+- **Grafana**: http://localhost:3000 (admin/admin, with monitoring)
 
 ### Health Check
 - **Jasmin Health**: http://localhost:1401/ping
