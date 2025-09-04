@@ -1,0 +1,46 @@
+# Environment files
+.env
+.env.local
+.env.production
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# System files
+*.pid
+*.sock
+*.lock
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Docker (if used)
+docker-compose.override.yml
