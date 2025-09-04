@@ -17,6 +17,8 @@ services:
   rabbit-mq:
     image: rabbitmq:3.10-management-alpine
     restart: unless-stopped
+    ports:
+      - 15672:15672
     healthcheck:
       test: rabbitmq-diagnostics -q ping
     deploy:
