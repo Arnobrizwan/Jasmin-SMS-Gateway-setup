@@ -1,22 +1,23 @@
 # Jasmin SMS Gateway - Ubuntu Setup
 
-.PHONY: help install start stop restart status logs test cli clean
+.PHONY: help install start stop restart status logs test cli clean test-server
 
 # Default target
 help:
 	@echo "Jasmin SMS Gateway - Ubuntu Setup"
 	@echo ""
 	@echo "Commands:"
-	@echo "  install    - Install Jasmin SMS Gateway on Ubuntu"
-	@echo "  start      - Start all services"
-	@echo "  stop       - Stop all services"
-	@echo "  restart    - Restart all services"
-	@echo "  status     - Check service status"
-	@echo "  logs       - Follow Jasmin logs"
-	@echo "  test       - Test SMS sending"
-	@echo "  cli        - Connect to Management CLI"
-	@echo "  clean      - Remove installation"
-	@echo "  help       - Show this help"
+	@echo "  install      - Install Jasmin SMS Gateway on Ubuntu"
+	@echo "  start        - Start all services"
+	@echo "  stop         - Stop all services"
+	@echo "  restart      - Restart all services"
+	@echo "  status       - Check service status"
+	@echo "  logs         - Follow Jasmin logs"
+	@echo "  test         - Test SMS sending"
+	@echo "  cli          - Connect to Management CLI"
+	@echo "  test-server  - Test installation on Ubuntu server"
+	@echo "  clean        - Remove installation"
+	@echo "  help         - Show this help"
 
 # Install Jasmin SMS Gateway
 install:
@@ -65,6 +66,12 @@ cli:
 	@echo "🔧 Connecting to Management CLI..."
 	@chmod +x ubuntu-commands.sh
 	@./ubuntu-commands.sh cli
+
+# Test server installation
+test-server:
+	@echo "🧪 Testing Ubuntu server installation..."
+	@chmod +x test-real-ubuntu.sh
+	@./test-real-ubuntu.sh
 
 # Clean installation
 clean:
