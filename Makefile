@@ -1,90 +1,78 @@
-# Jasmin SMS Gateway Docker Setup
+# Jasmin SMS Gateway - Ubuntu Setup
 
-.PHONY: help up down restart ps logs status clean test monitoring-up monitoring-down
+.PHONY: help install start stop restart status logs test cli clean
 
 # Default target
 help:
-	@echo "Jasmin SMS Gateway Docker Setup"
+	@echo "Jasmin SMS Gateway - Ubuntu Setup"
 	@echo ""
 	@echo "Commands:"
-	@echo "  up              - Start all services"
-	@echo "  down            - Stop all services"
-	@echo "  restart         - Restart all services"
-	@echo "  ps              - Show running containers"
-	@echo "  logs            - Follow logs"
-	@echo "  status          - Check service status"
-	@echo "  test            - Test SMS sending"
-	@echo "  monitoring-up   - Start with monitoring (Grafana + Prometheus)"
-	@echo "  monitoring-down - Stop monitoring services"
-	@echo "  clean           - Remove all containers and volumes"
-	@echo "  help            - Show this help"
+	@echo "  install    - Install Jasmin SMS Gateway on Ubuntu"
+	@echo "  start      - Start all services"
+	@echo "  stop       - Stop all services"
+	@echo "  restart    - Restart all services"
+	@echo "  status     - Check service status"
+	@echo "  logs       - Follow Jasmin logs"
+	@echo "  test       - Test SMS sending"
+	@echo "  cli        - Connect to Management CLI"
+	@echo "  clean      - Remove installation"
+	@echo "  help       - Show this help"
+
+# Install Jasmin SMS Gateway
+install:
+	@echo "🚀 Installing Jasmin SMS Gateway on Ubuntu..."
+	@chmod +x install-ubuntu.sh
+	@./install-ubuntu.sh
 
 # Start services
-up:
-	@echo "🚀 Starting Jasmin SMS Gateway..."
-	docker-compose up -d
-	@echo "✅ Services started!"
-	@echo "📱 HTTP API: http://localhost:1401"
-	@echo "🔧 Management CLI: telnet localhost 8990"
-	@echo "📡 SMPP Server: localhost:2775"
-	@echo "🐰 RabbitMQ Management: http://localhost:15672"
+start:
+	@echo "🚀 Starting Jasmin SMS Gateway services..."
+	@chmod +x ubuntu-commands.sh
+	@./ubuntu-commands.sh start
 
 # Stop services
-down:
-	@echo "🛑 Stopping services..."
-	docker-compose down
-	@echo "✅ Services stopped!"
+stop:
+	@echo "🛑 Stopping Jasmin SMS Gateway services..."
+	@chmod +x ubuntu-commands.sh
+	@./ubuntu-commands.sh stop
 
 # Restart services
 restart:
-	@echo "🔄 Restarting services..."
-	docker-compose restart
-	@echo "✅ Services restarted!"
-
-# Show running containers
-ps:
-	@echo "📊 Running containers:"
-	docker-compose ps
-
-# Follow logs
-logs:
-	@echo "📋 Following logs (Ctrl+C to exit)..."
-	docker-compose logs -f
+	@echo "🔄 Restarting Jasmin SMS Gateway services..."
+	@chmod +x ubuntu-commands.sh
+	@./ubuntu-commands.sh restart
 
 # Check status
 status:
-	@echo "🏥 Service status:"
-	@echo "Redis: $$(docker-compose exec redis redis-cli ping 2>/dev/null || echo 'Not running')"
-	@echo "RabbitMQ: $$(docker-compose exec rabbit-mq rabbitmq-diagnostics ping 2>/dev/null || echo 'Not running')"
-	@echo "Jasmin: $$(curl -s http://localhost:1401/ping 2>/dev/null || echo 'Not running')"
+	@echo "🏥 Checking service status..."
+	@chmod +x ubuntu-commands.sh
+	@./ubuntu-commands.sh status
+
+# Follow logs
+logs:
+	@echo "📄 Following Jasmin logs..."
+	@chmod +x ubuntu-commands.sh
+	@./ubuntu-commands.sh logs
 
 # Test SMS sending
 test:
 	@echo "📱 Testing SMS sending..."
-	@curl -s "http://localhost:1401/send?username=foo&password=bar&to=1234567890&content=Test%20SMS" || echo "❌ Test failed - make sure services are running"
+	@chmod +x ubuntu-commands.sh
+	@./ubuntu-commands.sh test
 
-# Start with monitoring
-monitoring-up:
-	@echo "🚀 Starting Jasmin SMS Gateway with monitoring..."
-	docker-compose -f docker-compose.monitoring.yml up -d
-	@echo "✅ Services with monitoring started!"
-	@echo "📱 HTTP API: http://localhost:1401"
-	@echo "🔧 Management CLI: telnet localhost 8990"
-	@echo "📡 SMPP Server: localhost:2775"
-	@echo "🐰 RabbitMQ Management: http://localhost:15672"
-	@echo "📊 Prometheus: http://localhost:9090"
-	@echo "📈 Grafana: http://localhost:3000 (admin/admin)"
+# Connect to CLI
+cli:
+	@echo "🔧 Connecting to Management CLI..."
+	@chmod +x ubuntu-commands.sh
+	@./ubuntu-commands.sh cli
 
-# Stop monitoring services
-monitoring-down:
-	@echo "🛑 Stopping monitoring services..."
-	docker-compose -f docker-compose.monitoring.yml down
-	@echo "✅ Monitoring services stopped!"
-
-# Clean up
+# Clean installation
 clean:
-	@echo "🧹 Cleaning up..."
-	docker-compose down -v
-	docker-compose -f docker-compose.monitoring.yml down -v
-	docker system prune -f
+	@echo "🧹 Cleaning up Jasmin SMS Gateway installation..."
+	@sudo systemctl stop jasmind || true
+	@sudo systemctl disable jasmind || true
+	@sudo apt-get remove -y jasmin-sms-gateway || true
+	@sudo apt-get autoremove -y || true
+	@sudo rm -rf /etc/jasmin /var/log/jasmin || true
+	@sudo userdel jasmin || true
 	@echo "✅ Cleanup complete!"

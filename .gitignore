@@ -2,34 +2,44 @@
 .env
 .env.local
 .env.production
-.env.staging
-
-# Sensitive files
-*.key
-*.pem
-*.p12
-*.pfx
-*secret*
-*password*
-*token*
 
 # Logs
-logs/
 *.log
+logs/
 
-# Docker
-.docker/
-
-# OS
+# Temporary files
+*.tmp
+*.temp
 .DS_Store
 Thumbs.db
 
-# IDE
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Temporary files
-*.tmp
-*.temp
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# System files
+*.pid
+*.sock
+*.lock
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Docker (if used)
+docker-compose.override.yml

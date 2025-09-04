@@ -1,0 +1,31 @@
+[Unit]
+Description=Jasmin SMS Gateway
+After=network.target redis.service rabbitmq-server.service
+Wants=redis.service rabbitmq-server.service
+
+[Service]
+Type=simple
+User=jasmin
+Group=jasmin
+WorkingDirectory=/etc/jasmin
+ExecStart=/usr/local/bin/jasmin
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=jasmind
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/jasmin /etc/jasmin/store
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=32768
+
+[Install]
+WantedBy=multi-user.target

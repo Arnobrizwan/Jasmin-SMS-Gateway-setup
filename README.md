@@ -1,32 +1,22 @@
-# Jasmin SMS Gateway - Docker Setup
+# Jasmin SMS Gateway - Ubuntu Installation
 
-A complete, production-ready, dockerized Jasmin SMS Gateway setup that runs locally with Docker and Docker Compose. This setup matches the official Jasmin documentation exactly and includes monitoring capabilities.
+A complete, production-ready Jasmin SMS Gateway setup for Ubuntu following the official documentation.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker 20.10+
-- Docker Compose 2.0+
-- Homebrew (for telnet on macOS)
+- Ubuntu 20.04 or newer
+- sudo privileges
+- Internet connection
 
-### One-Command Setup
+### One-Command Installation
 ```bash
-# Clone and start
+# Clone and install
 git clone https://github.com/Arnobrizwan/Jasmin-SMS-Gateway-setup.git
 cd jasmin-docker
-docker-compose up -d
+make install
 
 # That's it! Your SMS gateway is running
-```
-
-### With Monitoring (Grafana + Prometheus)
-```bash
-# Start with full monitoring stack
-make monitoring-up
-
-# Access monitoring dashboards
-# Prometheus: http://localhost:9090
-# Grafana: http://localhost:3000 (admin/admin)
 ```
 
 ## 📱 Access Your SMS Gateway
@@ -36,32 +26,24 @@ make monitoring-up
 - **Management CLI**: telnet localhost 8990
 - **SMPP Server**: localhost:2775
 - **RabbitMQ Management**: http://localhost:15672 (admin/admin)
-- **Prometheus**: http://localhost:9090 (with monitoring)
-- **Grafana**: http://localhost:3000 (admin/admin, with monitoring)
 
 ### Health Check
 - **Jasmin Health**: http://localhost:1401/ping
 - **RabbitMQ Health**: http://localhost:15672
-- **Redis Health**: Check with `docker-compose exec redis redis-cli ping`
+- **Redis Health**: Check with `redis-cli ping`
 
 ## 🔧 Configuration
-
-### Environment Variables
-Create a `.env` file to customize settings:
-
-```bash
-# Copy the example
-cp .env.example .env
-
-# Edit as needed
-nano .env
-```
 
 ### Default Configuration
 - **HTTP API Port**: 1401
 - **Management CLI Port**: 8990
 - **SMPP Server Port**: 2775
 - **RabbitMQ Management**: 15672
+
+### Configuration Files
+- **Main Config**: `/etc/jasmin/jasmin.cfg`
+- **Logs**: `/var/log/jasmin/`
+- **Store**: `/etc/jasmin/store/`
 
 ## 📖 Usage
 
@@ -74,31 +56,13 @@ curl "http://localhost:1401/send?username=foo&password=bar&to=1234567890&content
 
 #### Via Management CLI
 
-**Option 1: Install Telnet (Recommended)**
+**Connect to CLI**
 ```bash
-# Install telnet on macOS
-brew install telnet
-
-# Connect to CLI
+# Option 1: Using telnet
 telnet localhost 8990
-```
 
-**Option 2: Use Netcat (if telnet not available)**
-```bash
-# Connect using netcat
-nc localhost 8990
-```
-
-**Option 3: Use Docker Exec (Always Works)**
-```bash
-# Connect directly to container
-docker-compose exec jasmin telnet localhost 8990
-```
-
-**Option 4: Use Python Script**
-```bash
-# Use the provided script
-python3 connect-jcli.py
+# Option 2: Using make command
+make cli
 ```
 
 **Login (default: jcliadmin/jclipwd)**
@@ -157,14 +121,14 @@ smppccm -1 DEMO_CONNECTOR
 
 #### Check Status
 ```bash
-# View running containers
-docker-compose ps
+# Check service status
+make status
 
 # View logs
-docker-compose logs -f jasmin
+make logs
 
-# Check health
-curl http://localhost:1401/ping
+# Test SMS
+make test
 ```
 
 #### RabbitMQ Management
@@ -172,55 +136,61 @@ curl http://localhost:1401/ping
 - Login: admin/admin
 - Monitor queues, connections, and performance
 
-#### Grafana Dashboards (with monitoring)
-- Open http://localhost:3000
-- Login: admin/admin
-- View pre-configured dashboards for Jasmin and RabbitMQ
-
-## 🐳 Docker Commands
+## 🐧 Ubuntu Commands
 
 ### Basic Operations
 ```bash
 # Start services
-docker-compose up -d
+make start
 
 # Stop services
-docker-compose down
+make stop
 
 # Restart services
-docker-compose restart
-
-# View logs
-docker-compose logs -f
-
-# View specific service logs
-docker-compose logs -f jasmin
-```
-
-### Monitoring Commands
-```bash
-# Start with monitoring
-make monitoring-up
-
-# Stop monitoring
-make monitoring-down
+make restart
 
 # Check status
 make status
 
+# View logs
+make logs
+
 # Test SMS
 make test
+
+# Connect to CLI
+make cli
+```
+
+### Service Management
+```bash
+# Check individual services
+sudo systemctl status jasmind
+sudo systemctl status rabbitmq-server
+sudo systemctl status redis-server
+
+# View logs
+sudo journalctl -u jasmind -f
+sudo journalctl -u rabbitmq-server -f
+sudo journalctl -u redis-server -f
+
+# Restart individual services
+sudo systemctl restart jasmind
+sudo systemctl restart rabbitmq-server
+sudo systemctl restart redis-server
 ```
 
 ### Maintenance
 ```bash
-# Update images
-docker-compose pull
-docker-compose up -d
+# Update system
+sudo apt update && sudo apt upgrade
 
-# Clean up
-docker-compose down -v
-docker system prune -f
+# Update Jasmin
+sudo apt update
+sudo apt install jasmin-sms-gateway
+
+# Clean installation
+make clean
 ```
 
 ## 🔒 Security
@@ -228,37 +198,29 @@ docker system prune -f
 ### Default Credentials
 - **Management CLI**: jcliadmin/jclipwd
 - **RabbitMQ Management**: admin/admin
-- **Grafana**: admin/admin
 
 ### Security Recommendations
 1. **Change default passwords** immediately
-2. **Use environment variables** for sensitive data
-3. **Enable HTTPS** in production
-4. **Restrict network access** to necessary ports
-5. **Regular updates** of Docker images
+2. **Configure firewall** rules
+3. **Use HTTPS** in production
+4. **Regular updates** of system packages
+5. **Monitor logs** regularly
 
 ## 📊 Monitoring
 
 ### Health Checks
 All services include health checks:
 - **Redis**: `redis-cli ping`
-- **RabbitMQ**: `rabbitmq-diagnostics ping`
+- **RabbitMQ**: `sudo rabbitmq-diagnostics ping`
 - **Jasmin**: HTTP endpoint check
 
 ### Logs
-- **Jasmin**: `/var/log/jasmin/`
-- **RabbitMQ**: Standard Docker logs
-- **Redis**: Standard Docker logs
+- **Jasmin**: `/var/log/jasmin/` and `sudo journalctl -u jasmind`
+- **RabbitMQ**: `sudo journalctl -u rabbitmq-server`
+- **Redis**: `sudo journalctl -u redis-server`
 
 ### Metrics
 Jasmin exposes Prometheus metrics at `/metrics` endpoint for monitoring.
-
-### Grafana Dashboards
-With monitoring enabled, you get:
-- **Jasmin HTTP API**: HTTP API monitoring
-- **Jasmin SMPP Clients**: Per SMPP Client monitoring
-- **Jasmin SMPP Server**: SMPP Server monitoring
-- **RabbitMQ Overview**: Standard RabbitMQ monitoring
 
 ## 🚀 Production Deployment
 
@@ -285,25 +247,22 @@ With monitoring enabled, you get:
 #### Service Won't Start
 ```bash
 # Check logs
-docker-compose logs jasmin
+sudo journalctl -u jasmind -n 50
 
 # Check dependencies
-docker-compose ps
+make status
 
 # Restart services
-docker-compose restart
+make restart
 ```
 
 #### Can't Connect to CLI
 ```bash
-# Install telnet first
-brew install telnet
-
 # Check if port is open
 telnet localhost 8990
 
 # Check if service is running
-docker-compose ps jasmin
+sudo systemctl status jasmind
 ```
 
 #### SMS Not Sending
@@ -313,27 +272,28 @@ telnet localhost 8990
 smppccm --list
 
 # Check logs
-docker-compose logs jasmin
+sudo journalctl -u jasmind -f
 ```
 
-#### Telnet Not Working
+#### Permission Issues
 ```bash
-# Install telnet
-brew install telnet
+# Fix ownership
+sudo chown -R jasmin:jasmin /etc/jasmin
+sudo chown -R jasmin:jasmin /var/log/jasmin
 
-# Or use alternatives
-nc localhost 8990
-docker-compose exec jasmin telnet localhost 8990
-python3 connect-jcli.py
+# Fix permissions
+sudo chmod -R 755 /etc/jasmin
+sudo chmod -R 755 /var/log/jasmin
 ```
 
 ### Debug Mode
 ```bash
 # Run in foreground
-docker-compose up
+sudo systemctl stop jasmind
+sudo -u jasmin jasmind
 
 # Check specific service
-docker-compose exec jasmin bash
+sudo systemctl status jasmind
 ```
 
 ## 📚 API Reference
@@ -370,17 +330,10 @@ Returns: Prometheus metrics
 ## 🌍 Platform Support
 
 ### Supported Platforms
-- ✅ **Linux** (x86_64, ARM64)
-- ✅ **macOS** (Intel, Apple Silicon)
-- ✅ **Windows** (with WSL2)
-- ✅ **Cloud** (AWS, GCP, Azure, etc.)
-
-### Docker Images
-- **Jasmin**: `jookies/jasmin:latest`
-- **Redis**: `redis:alpine`
-- **RabbitMQ**: `rabbitmq:3.10-management-alpine`
-- **Prometheus**: `prom/prometheus:latest`
-- **Grafana**: `grafana/grafana`
+- ✅ **Ubuntu 20.04+** (Primary)
+- ✅ **Ubuntu 18.04** (Limited)
+- ✅ **Debian 10+** (Compatible)
+- ✅ **Cloud VMs** (AWS, GCP, Azure, etc.)
 
 ## 📖 Documentation
 
@@ -399,7 +352,7 @@ Returns: Prometheus metrics
 
 ### Local Development
 1. **Clone the repository**
-2. **Run `docker-compose up -d`**
+2. **Run `make install`**
 3. **Access the services** using the localhost URLs above
 4. **Configure users and routes** via Management CLI
 
@@ -407,14 +360,14 @@ Returns: Prometheus metrics
 1. **Use a reverse proxy** (nginx/Apache) for HTTPS
 2. **Set up monitoring** (Prometheus/Grafana)
 3. **Configure backup** for data persistence
-4. **Use environment variables** for sensitive data
-5. **Set up logging** aggregation
+4. **Set up logging** aggregation
+5. **Configure firewall** rules
 
 ### Cloud Deployment
-1. **AWS/GCP/Azure**: Use managed services for Redis/RabbitMQ
-2. **Docker Swarm/Kubernetes**: Use the provided docker-compose.yml
-3. **Load Balancing**: Use cloud load balancers
-4. **Auto-scaling**: Configure based on CPU/memory usage
+1. **AWS/GCP/Azure**: Use Ubuntu VMs
+2. **Load Balancing**: Use cloud load balancers
+3. **Auto-scaling**: Configure based on CPU/memory usage
+4. **Monitoring**: Use cloud monitoring services
 
 ### Security Checklist
 - [ ] Change default passwords
@@ -423,27 +376,6 @@ Returns: Prometheus metrics
 - [ ] Set up monitoring alerts
 - [ ] Regular security updates
 - [ ] Backup configuration
-
-## 🛠️ Makefile Commands
-
-```bash
-# Basic operations
-make up              # Start all services
-make down            # Stop all services
-make restart         # Restart all services
-make ps              # Show running containers
-make logs            # Follow logs
-make status          # Check service status
-make test            # Test SMS sending
-make clean           # Remove all containers and volumes
-
-# Monitoring
-make monitoring-up   # Start with monitoring (Grafana + Prometheus)
-make monitoring-down # Stop monitoring services
-
-# Help
-make help            # Show all available commands
-```
 
 ## 📄 License
 
