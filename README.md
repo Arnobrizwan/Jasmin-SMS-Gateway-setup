@@ -1,17 +1,6 @@
----
-title: Jasmin SMS Gateway
-emoji: 📱
-colorFrom: blue
-colorTo: purple
-sdk: docker
-pinned: false
-license: apache-2.0
-app_port: 1401
----
+# Jasmin SMS Gateway - Docker Setup
 
-# Jasmin SMS Gateway
-
-A complete, production-ready, dockerized Jasmin SMS Gateway setup that can run anywhere with Docker and Docker Compose.
+A complete, production-ready, dockerized Jasmin SMS Gateway setup that runs locally with Docker and Docker Compose.
 
 ## 🚀 Quick Start
 
@@ -22,34 +11,25 @@ A complete, production-ready, dockerized Jasmin SMS Gateway setup that can run a
 ### One-Command Setup
 ```bash
 # Clone and start
-git clone <repository-url>
+git clone https://github.com/Arnobrizwan/Jasmin-SMS-Gateway-setup.git
 cd jasmin-docker
 docker-compose up -d
 
 # That's it! Your SMS gateway is running
 ```
 
-### Deploy to Hugging Face Spaces (Free)
-1. Go to [Hugging Face Spaces](https://huggingface.co/spaces)
-2. Click "Create new Space"
-3. Choose "Docker" as SDK
-4. Connect your GitHub repository
-5. Your SMS gateway will be deployed automatically!
+## 📱 Access Your SMS Gateway
 
-## 📋 What You Get
+### Local URLs
+- **HTTP API**: http://localhost:1401
+- **Management CLI**: telnet localhost 8990
+- **SMPP Server**: localhost:2775
+- **RabbitMQ Management**: http://localhost:15672 (admin/admin)
 
-### Core Services
-- **Jasmin SMS Gateway** - The main SMS gateway service
-- **Redis** - For message ID mapping and delivery receipts
-- **RabbitMQ** - AMQP message broker for core functionality
-
-### Features
-- ✅ **HTTP API** for sending SMS
-- ✅ **SMPP Server** for receiving SMS
-- ✅ **Management CLI** for configuration
-- ✅ **Health checks** and auto-restart
-- ✅ **Resource limits** for production use
-- ✅ **Security optimizations**
+### Health Check
+- **Jasmin Health**: http://localhost:1401/ping
+- **RabbitMQ Health**: http://localhost:15672
+- **Redis Health**: Check with `docker-compose exec redis redis-cli ping`
 
 ## 🔧 Configuration
 
@@ -140,7 +120,7 @@ docker-compose ps
 docker-compose logs -f jasmin
 
 # Check health
-docker-compose exec jasmin curl http://localhost:1401/ping
+curl http://localhost:1401/ping
 ```
 
 #### RabbitMQ Management
@@ -188,8 +168,7 @@ docker system prune -f
 ### Security Recommendations
 1. **Change default passwords** immediately
 2. **Use environment variables** for sensitive data
-3. **Enable HTTPS** in production
-4. **Restrict network access** to necessary ports
+3. **Restrict network access** to necessary ports
 5. **Regular updates** of Docker images
 
 ## 📊 Monitoring
@@ -308,7 +287,6 @@ Returns: Prometheus metrics
 - ✅ **macOS** (Intel, Apple Silicon)
 - ✅ **Windows** (with WSL2)
 - ✅ **Cloud** (AWS, GCP, Azure, etc.)
-- ✅ **Hugging Face Spaces** (Free hosting)
 
 ### Docker Images
 - **Jasmin**: `jookies/jasmin:latest`
@@ -327,6 +305,35 @@ Returns: Prometheus metrics
 - [GitHub Repository](https://github.com/jookies/jasmin)
 - [Issues & Support](https://github.com/jookies/jasmin/issues)
 - [Discussions](https://github.com/jookies/jasmin/discussions)
+
+## 🚀 Deployment Guidelines
+
+### Local Development
+1. **Clone the repository**
+2. **Run `docker-compose up -d`**
+3. **Access the services** using the localhost URLs above
+4. **Configure users and routes** via Management CLI
+
+### Production Deployment
+1. **Use a reverse proxy** (nginx/Apache) for HTTPS
+2. **Set up monitoring** (Prometheus/Grafana)
+3. **Configure backup** for data persistence
+4. **Use environment variables** for sensitive data
+5. **Set up logging** aggregation
+
+### Cloud Deployment
+1. **AWS/GCP/Azure**: Use managed services for Redis/RabbitMQ
+2. **Docker Swarm/Kubernetes**: Use the provided docker-compose.yml
+3. **Load Balancing**: Use cloud load balancers
+4. **Auto-scaling**: Configure based on CPU/memory usage
+
+### Security Checklist
+- [ ] Change default passwords
+- [ ] Enable HTTPS
+- [ ] Configure firewall rules
+- [ ] Set up monitoring alerts
+- [ ] Regular security updates
+- [ ] Backup configuration
 
 ## 📄 License
 
