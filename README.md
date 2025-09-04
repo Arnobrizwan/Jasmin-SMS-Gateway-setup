@@ -1,12 +1,13 @@
 # Jasmin SMS Gateway - Docker Setup
 
-A complete, production-ready, dockerized Jasmin SMS Gateway setup that runs locally with Docker and Docker Compose.
+A complete, production-ready, dockerized Jasmin SMS Gateway setup that runs locally with Docker and Docker Compose. This setup matches the official Jasmin documentation exactly and includes monitoring capabilities.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Docker 20.10+
 - Docker Compose 2.0+
+- Homebrew (for telnet on macOS)
 
 ### One-Command Setup
 ```bash
@@ -104,21 +105,27 @@ python3 connect-jcli.py
 ```
 Username: jcliadmin
 Password: jclipwd
+```
 
-# Create a user
+**Create a Group:**
+```
+group -a
+> gid default
+> ok
+```
+
+**Create a User:**
+```
 user -a
 > username foo
 > password bar
 > gid default
 > uid foo
 > ok
+```
 
-# Create a group
-group -a
-> gid default
-> ok
-
-# Create a route
+**Create a Route:**
+```
 mtrouter -a
 > type defaultroute
 > connector smppc(DEMO_CONNECTOR)
@@ -165,6 +172,11 @@ curl http://localhost:1401/ping
 - Login: admin/admin
 - Monitor queues, connections, and performance
 
+#### Grafana Dashboards (with monitoring)
+- Open http://localhost:3000
+- Login: admin/admin
+- View pre-configured dashboards for Jasmin and RabbitMQ
+
 ## 🐳 Docker Commands
 
 ### Basic Operations
@@ -185,6 +197,21 @@ docker-compose logs -f
 docker-compose logs -f jasmin
 ```
 
+### Monitoring Commands
+```bash
+# Start with monitoring
+make monitoring-up
+
+# Stop monitoring
+make monitoring-down
+
+# Check status
+make status
+
+# Test SMS
+make test
+```
+
 ### Maintenance
 ```bash
 # Update images
@@ -201,11 +228,13 @@ docker system prune -f
 ### Default Credentials
 - **Management CLI**: jcliadmin/jclipwd
 - **RabbitMQ Management**: admin/admin
+- **Grafana**: admin/admin
 
 ### Security Recommendations
 1. **Change default passwords** immediately
 2. **Use environment variables** for sensitive data
-3. **Restrict network access** to necessary ports
+3. **Enable HTTPS** in production
+4. **Restrict network access** to necessary ports
 5. **Regular updates** of Docker images
 
 ## 📊 Monitoring
@@ -223,6 +252,13 @@ All services include health checks:
 
 ### Metrics
 Jasmin exposes Prometheus metrics at `/metrics` endpoint for monitoring.
+
+### Grafana Dashboards
+With monitoring enabled, you get:
+- **Jasmin HTTP API**: HTTP API monitoring
+- **Jasmin SMPP Clients**: Per SMPP Client monitoring
+- **Jasmin SMPP Server**: SMPP Server monitoring
+- **RabbitMQ Overview**: Standard RabbitMQ monitoring
 
 ## 🚀 Production Deployment
 
@@ -260,6 +296,9 @@ docker-compose restart
 
 #### Can't Connect to CLI
 ```bash
+# Install telnet first
+brew install telnet
+
 # Check if port is open
 telnet localhost 8990
 
@@ -275,6 +314,17 @@ smppccm --list
 
 # Check logs
 docker-compose logs jasmin
+```
+
+#### Telnet Not Working
+```bash
+# Install telnet
+brew install telnet
+
+# Or use alternatives
+nc localhost 8990
+docker-compose exec jasmin telnet localhost 8990
+python3 connect-jcli.py
 ```
 
 ### Debug Mode
@@ -329,6 +379,8 @@ Returns: Prometheus metrics
 - **Jasmin**: `jookies/jasmin:latest`
 - **Redis**: `redis:alpine`
 - **RabbitMQ**: `rabbitmq:3.10-management-alpine`
+- **Prometheus**: `prom/prometheus:latest`
+- **Grafana**: `grafana/grafana`
 
 ## 📖 Documentation
 
@@ -371,6 +423,27 @@ Returns: Prometheus metrics
 - [ ] Set up monitoring alerts
 - [ ] Regular security updates
 - [ ] Backup configuration
+
+## 🛠️ Makefile Commands
+
+```bash
+# Basic operations
+make up              # Start all services
+make down            # Stop all services
+make restart         # Restart all services
+make ps              # Show running containers
+make logs            # Follow logs
+make status          # Check service status
+make test            # Test SMS sending
+make clean           # Remove all containers and volumes
+
+# Monitoring
+make monitoring-up   # Start with monitoring (Grafana + Prometheus)
+make monitoring-down # Stop monitoring services
+
+# Help
+make help            # Show all available commands
+```
 
 ## 📄 License
 
