@@ -1,4 +1,15 @@
-# Jasmin SMS Gateway - Docker Setup
+---
+title: Jasmin SMS Gateway
+emoji: 📱
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+license: apache-2.0
+app_port: 1401
+---
+
+# Jasmin SMS Gateway
 
 A complete, production-ready, dockerized Jasmin SMS Gateway setup that can run anywhere with Docker and Docker Compose.
 
@@ -18,20 +29,12 @@ docker-compose up -d
 # That's it! Your SMS gateway is running
 ```
 
-### Deploy to Cloud (Free)
-```bash
-# Deploy to Render.com (free hosting)
-make deploy-render
-
-# Or use the web interface
-# Visit: https://render.com
-```
-
-### Access Points
-- **HTTP API**: http://localhost:1401
-- **Management CLI**: telnet localhost 8990
-- **SMPP Server**: localhost:2775
-- **RabbitMQ Management**: http://localhost:15672 (admin/admin)
+### Deploy to Hugging Face Spaces (Free)
+1. Go to [Hugging Face Spaces](https://huggingface.co/spaces)
+2. Click "Create new Space"
+3. Choose "Docker" as SDK
+4. Connect your GitHub repository
+5. Your SMS gateway will be deployed automatically!
 
 ## 📋 What You Get
 
@@ -305,6 +308,7 @@ Returns: Prometheus metrics
 - ✅ **macOS** (Intel, Apple Silicon)
 - ✅ **Windows** (with WSL2)
 - ✅ **Cloud** (AWS, GCP, Azure, etc.)
+- ✅ **Hugging Face Spaces** (Free hosting)
 
 ### Docker Images
 - **Jasmin**: `jookies/jasmin:latest`

@@ -1,22 +1,22 @@
 # Jasmin SMS Gateway Docker Setup
 
-.PHONY: help up down restart ps logs status clean test deploy-render
+.PHONY: help up down restart ps logs status clean test deploy-hf
 
 # Default target
 help:
 	@echo "Jasmin SMS Gateway Docker Setup"
 	@echo ""
 	@echo "Commands:"
-	@echo "  up            - Start all services"
-	@echo "  down          - Stop all services"
-	@echo "  restart       - Restart all services"
-	@echo "  ps            - Show running containers"
-	@echo "  logs          - Follow logs"
-	@echo "  status        - Check service status"
-	@echo "  test          - Test SMS sending"
-	@echo "  clean         - Remove all containers and volumes"
-	@echo "  deploy-render - Deploy to Render.com"
-	@echo "  help          - Show this help"
+	@echo "  up          - Start all services"
+	@echo "  down        - Stop all services"
+	@echo "  restart     - Restart all services"
+	@echo "  ps          - Show running containers"
+	@echo "  logs        - Follow logs"
+	@echo "  status      - Check service status"
+	@echo "  test        - Test SMS sending"
+	@echo "  clean       - Remove all containers and volumes"
+	@echo "  deploy-hf   - Deploy to Hugging Face Spaces"
+	@echo "  help        - Show this help"
 
 # Start services
 up:
@@ -69,7 +69,16 @@ clean:
 	docker system prune -f
 	@echo "✅ Cleanup complete!"
 
-# Deploy to Render.com
-deploy-render:
-	@echo "🚀 Deploying to Render.com..."
-	./deploy-render.sh
+# Deploy to Hugging Face Spaces
+deploy-hf:
+	@echo "🚀 Deploying to Hugging Face Spaces..."
+	@echo "1. Go to https://huggingface.co/spaces"
+	@echo "2. Click 'Create new Space'"
+	@echo "3. Choose 'Docker' as SDK"
+	@echo "4. Connect your GitHub repository"
+	@echo "5. Your SMS gateway will be deployed automatically!"
+	@echo ""
+	@echo "📱 After deployment, your SMS gateway will be available at:"
+	@echo "  - Web Interface: https://your-username-jasmin-sms-gateway.hf.space"
+	@echo "  - HTTP API: https://your-username-jasmin-sms-gateway.hf.space/api/send"
+	@echo "  - Health Check: https://your-username-jasmin-sms-gateway.hf.space/api/health"
