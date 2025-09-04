@@ -1,77 +1,125 @@
 # Jasmin SMS Gateway - Complete Setup Guide
 
-## 🎉 **Successfully Deployed on Google Cloud Platform**
+## 🚀 **Overview**
 
-Your SMS Gateway is now running on Google Cloud VM with the following details:
+This repository contains a complete setup for the Jasmin SMS Gateway, including installation scripts, configuration files, and a web-based monitoring dashboard. The setup supports both local development and production deployment on cloud platforms.
 
-### 📍 **Deployment Information**
-- **VM IP**: `34.56.36.182`
-- **HTTP API Port**: `1401`
-- **Status**: ✅ **ACTIVE AND WORKING**
-- **Deployment Date**: September 4, 2025
+### 📋 **Features**
+- ✅ **Complete Installation Scripts** for Ubuntu/Debian
+- ✅ **Web Dashboard** with real-time monitoring
+- ✅ **CORS Proxy** for seamless remote access
+- ✅ **Docker Support** for containerized deployment
+- ✅ **Security Best Practices** implemented
+- ✅ **Comprehensive Documentation** and examples
+- ✅ **Production Ready** configuration
 
-### 🔐 **Access Credentials**
-- **Username**: `admin`
-- **Password**: `[REDACTED - See Security Section Below]`
-- **URL-encoded Password**: `[REDACTED - See Security Section Below]`
-
-**⚠️ SECURITY WARNING**: Real credentials are not shown in this public repository for security reasons. See the Security section below for proper credential management.
+### 🎯 **Supported Platforms**
+- **Ubuntu 20.04+** (Primary)
+- **Ubuntu 18.04** (Limited)
+- **Debian 10+** (Compatible)
+- **Docker** (All platforms)
+- **Cloud VMs** (AWS, GCP, Azure, etc.)
 
 ## 🚀 **Quick Start**
 
-### **Send Your First SMS**
+### **1. Clone the Repository**
 ```bash
-curl "http://34.56.36.182:1401/send?username=admin&password=YOUR_PASSWORD&to=+1234567890&content=Hello%20World"
+git clone https://github.com/Arnobrizwan/Jasmin-SMS-Gateway-setup.git
+cd Jasmin-SMS-Gateway-setup/jasmin-docker
 ```
 
-### **Check Gateway Status**
+### **2. Choose Your Installation Method**
+
+#### **Option A: Ubuntu/Debian Package (Recommended)**
 ```bash
-curl "http://34.56.36.182:1401/status"
+# Run the installation script
+chmod +x install-ubuntu.sh
+sudo ./install-ubuntu.sh
 ```
 
-### **Ping Test**
+#### **Option B: Docker (Production Ready)**
 ```bash
-curl "http://34.56.36.182:1401/ping"
+# Start with Docker Compose
+docker-compose up -d
+```
+
+#### **Option C: Manual Installation**
+```bash
+# Follow the detailed installation guide
+./quick-deploy.sh
+```
+
+### **3. Start the Dashboard**
+```bash
+# Start the monitoring dashboard
+python3 cors-proxy.py 8081
+# Open http://localhost:8081/dashboard.html
+```
+
+### **4. Test Your Installation**
+```bash
+# Test ping
+curl "http://localhost:1401/ping"
+
+# Test status
+curl "http://localhost:1401/status"
+
+# Send test SMS (after configuring users)
+curl "http://localhost:1401/send?username=YOUR_USER&password=YOUR_PASS&to=+1234567890&content=Hello%20World"
 ```
 
 ## 📱 **API Endpoints**
 
 ### **HTTP API (Port 1401)**
-- **Send SMS**: `GET /send?username=admin&password=PASSWORD&to=PHONE&content=MESSAGE`
+- **Send SMS**: `GET /send?username=USER&password=PASSWORD&to=PHONE&content=MESSAGE`
 - **Status**: `GET /status`
 - **Ping**: `GET /ping`
+- **Metrics**: `GET /metrics` (Prometheus format)
 
 ### **Example Response**
 ```json
 {
   "status": "success",
-  "message_id": "65080829-b9a2-49c0-9c46-26facdbb008f",
+  "message_id": "unique-message-id-uuid",
   "to": "1234567890",
   "content": "Hello World",
   "timestamp": "2025-09-04T10:29:10.991167"
 }
 ```
 
-## 🌐 **External Access**
+### **Error Response**
+```json
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
 
-Your SMS Gateway is accessible from anywhere on the internet:
+## 🌐 **Network Access**
 
-- **HTTP API**: `http://34.56.36.182:1401`
-- **Send SMS**: `http://34.56.36.182:1401/send?username=admin&password=YOUR_PASSWORD&to=PHONE&content=MESSAGE`
-- **Status**: `http://34.56.36.182:1401/status`
-- **Ping**: `http://34.56.36.182:1401/ping`
+### **Local Development**
+- **HTTP API**: `http://localhost:1401`
+- **Management CLI**: `telnet localhost 8990`
+- **Dashboard**: `http://localhost:8081/dashboard.html`
+
+### **Production Deployment**
+- **HTTP API**: `http://YOUR_SERVER_IP:1401`
+- **Management CLI**: `telnet YOUR_SERVER_IP 8990`
+- **Dashboard**: `http://YOUR_SERVER_IP:8081/dashboard.html`
 
 ## 📋 **Integration Examples**
 
 ### **Python Integration**
 ```python
 import requests
+import os
 
-def send_sms(phone_number, message):
-    url =http://34.56.36.182:1401/send"
+def send_sms(phone_number, message, server_url="http://localhost:1401"):
+    """Send SMS via HTTP API"""
+    url = f"{server_url}/send"
     params = {
-        'username': 'admin',
-        'password': 'YOUR_PASSWORD',
+        'username': os.getenv('SMS_USERNAME', 'your_username'),
+        'password': os.getenv('SMS_PASSWORD', 'your_password'),
         'to': phone_number,
         'content': message
     }
@@ -85,11 +133,11 @@ print(result)
 
 ### **JavaScript Integration**
 ```javascript
-async function sendSMS(phoneNumber, message) {
-    const url = 'http://34.56.36.182:1401/send';
+async function sendSMS(phoneNumber, message, serverUrl = 'http://localhost:1401') {
+    const url = `${serverUrl}/send`;
     const params = new URLSearchParams({
-        username: 'admin',
-        password: 'YOUR_PASSWORD',
+        username: process.env.SMS_USERNAME || 'your_username',
+        password: process.env.SMS_PASSWORD || 'your_password',
         to: phoneNumber,
         content: message
     });
@@ -110,13 +158,24 @@ sendSMS('+1234567890', 'Hello from JavaScript!')
 
 PHONE_NUMBER=$1
 MESSAGE=$2
+SERVER_URL=${3:-"http://localhost:1401"}
+USERNAME=${SMS_USERNAME:-"your_username"}
+PASSWORD=${SMS_PASSWORD:-"your_password"}
 
 if [ -z "$PHONE_NUMBER" ] || [ -z "$MESSAGE" ]; then
-    echo "Usage: $0 <phone_number> <message>"
+    echo "Usage: $0 <phone_number> <message> [server_url]"
     exit 1
 fi
 
-curl "http://34.56.36.182:1401/send?username=admin&password=YOUR_PASSWORD&to=$PHONE_NUMBER&content=$MESSAGE"
+curl "${SERVER_URL}/send?username=${USERNAME}&password=${PASSWORD}&to=${PHONE_NUMBER}&content=${MESSAGE}"
+```
+
+### **Environment Variables Setup**
+```bash
+# Set environment variables for secure credential management
+export SMS_USERNAME="your_username"
+export SMS_PASSWORD="your_secure_password"
+export SMS_SERVER_URL="http://your-server:1401"
 ```
 
 ## 📊 **Monitoring Dashboard**
@@ -614,10 +673,10 @@ sudo systemctl restart sms-gateway
 #### **Cannot Send SMS**
 ```bash
 # Check if service is running
-curl http://34.56.36.182:1401/ping
+curl http://localhost:1401/ping
 
-# Test authentication
-curl "http://34.56.36.182:1401/send?username=admin&password=VhYK9Ho8I7cNPWGnypNRwO%2BPLypHQhStxyMLNiCzobk%3D&to=1234567890&content=test"
+# Test authentication (replace with your credentials)
+curl "http://localhost:1401/send?username=YOUR_USER&password=YOUR_PASSWORD&to=1234567890&content=test"
 
 # Check logs
 sudo tail -f /var/log/jasmin/sms-gateway.log
@@ -638,10 +697,10 @@ sudo systemctl status sms-gateway
 #### **Authentication Errors**
 ```bash
 # Verify credentials
-curl "http://34.56.36.182:1401/status"
+curl "http://localhost:1401/status"
 
-# Check password encoding
-echo "VhYK9Ho8I7cNPWGnypNRwO+PLypHQhStxyMLNiCzobk=" | python3 -c "import urllib.parse; print(urllib.parse.quote(input().strip()))"
+# Check password encoding (replace with your password)
+echo "YOUR_PASSWORD" | python3 -c "import urllib.parse; print(urllib.parse.quote(input().strip()))"
 ```
 
 ### **Debug Mode**
@@ -676,7 +735,7 @@ netstat -tlnp | grep :8081
 #### **Dashboard Shows "Failed to fetch"**
 ```bash
 # Test SMS Gateway connectivity
-curl http://34.56.36.182:1401/ping
+curl http://localhost:1401/ping
 
 # Test proxy connectivity
 curl http://localhost:8081/proxy/ping
@@ -687,18 +746,18 @@ python3 cors-proxy.py 8081
 
 #### **SMS Sending Fails**
 ```bash
-# Test direct SMS sending
-curl "http://34.56.36.182:1401/send?username=admin&password=VhYK9Ho8I7cNPWGnypNRwO%2BPLypHQhStxyMLNiCzobk%3D&to=test&content=test"
+# Test direct SMS sending (replace with your credentials)
+curl "http://localhost:1401/send?username=YOUR_USER&password=YOUR_PASSWORD&to=test&content=test"
 
 # Test through proxy
-curl "http://localhost:8081/proxy/send?username=admin&password=VhYK9Ho8I7cNPWGnypNRwO%2BPLypHQhStxyMLNiCzobk%3D&to=test&content=test"
+curl "http://localhost:8081/proxy/send?username=YOUR_USER&password=YOUR_PASSWORD&to=test&content=test"
 ```
 
 ## 📊 **Monitoring & Metrics**
 
 ### **Health Checks**
-- **Gateway Status**: `http://34.56.36.182:1401/ping`
-- **API Status**: `http://34.56.36.182:1401/status`
+- **Gateway Status**: `http://localhost:1401/ping`
+- **API Status**: `http://localhost:1401/status`
 - **Service Status**: `sudo systemctl status sms-gateway`
 
 ### **Logs**
@@ -752,6 +811,87 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 🔧 **Installation Methods**
+
+### **Method 1: Ubuntu/Debian Package (Recommended)**
+```bash
+# Add Jasmin repository
+curl -s https://setup.jasminsms.com/deb | sudo bash
+
+# Update package lists
+sudo apt-get update
+
+# Install Jasmin SMS Gateway
+sudo apt-get install jasmin-sms-gateway
+
+# Start services
+sudo systemctl enable jasmind
+sudo systemctl start jasmind
+```
+
+### **Method 2: Docker Installation (Production Ready)**
+```bash
+# Create docker-compose.yml
+cat > docker-compose.yml << 'EOF'
+version: "3.10"
+
+services:
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    healthcheck:
+      test: redis-cli ping | grep PONG
+
+  rabbit-mq:
+    image: rabbitmq:3.10-management-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+
+  jasmin:
+    image: jookies/jasmin:latest
+    restart: unless-stopped
+    ports:
+      - 2775:2775
+      - 8990:8990
+      - 1401:1401
+    depends_on:
+      redis:
+        condition: service_healthy
+      rabbit-mq:
+        condition: service_healthy
+    environment:
+      REDIS_CLIENT_HOST: redis
+      AMQP_BROKER_HOST: rabbit-mq
+EOF
+
+# Start services
+docker-compose up -d
+```
+
+### **Method 3: Python PIP Installation**
+```bash
+# Create system user
+sudo useradd jasmin
+
+# Create required directories
+sudo mkdir -p /etc/jasmin/resource
+sudo mkdir -p /etc/jasmin/store
+sudo mkdir -p /var/log/jasmin
+
+# Set ownership
+sudo chown -R jasmin:jasmin /etc/jasmin
+sudo chown -R jasmin:jasmin /var/log/jasmin
+
+# Install Jasmin
+sudo pip install jasmin
+
+# Download and install systemd service
+# (Download from: https://github.com/jookies/jasmin/tree/master/misc/config/systemd)
+sudo systemctl enable jasmind
+sudo systemctl start jasmind
+```
 
 ## 📚 **Official Jasmin Compliance**
 
