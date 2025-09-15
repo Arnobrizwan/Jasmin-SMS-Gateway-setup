@@ -74,7 +74,7 @@ Access at: `http://localhost:5000`
 
 ### Default Credentials
 - Username: `jcliadmin`
-- Password: `jclipwd`
+- Password: `[GENERATED_DURING_INSTALLATION]`
 
 ## 🚀 Server Deployment
 
@@ -121,9 +121,9 @@ Create a `.env` file with your settings:
 ```bash
 # Jasmin Configuration
 JASMIN_HTTP_USERNAME=your_username
-JASMIN_HTTP_PASSWORD=your_password
+JASMIN_HTTP_PASSWORD=your_secure_password
 JASMIN_CLI_USERNAME=your_cli_username
-JASMIN_CLI_PASSWORD=your_cli_password
+JASMIN_CLI_PASSWORD=your_secure_cli_password
 
 # Redis Configuration
 REDIS_HOST=localhost
@@ -133,7 +133,7 @@ REDIS_PORT=6379
 RABBITMQ_HOST=localhost
 RABBITMQ_PORT=5672
 RABBITMQ_USERNAME=admin
-RABBITMQ_PASSWORD=your_rabbitmq_password
+RABBITMQ_PASSWORD=your_secure_rabbitmq_password
 ```
 
 ## 🧪 Testing

@@ -261,7 +261,7 @@ HTML_TEMPLATE = '''
                     
                     <div class="form-group">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" value="jclipwd" required>
+                        <input type="password" id="password" name="password" placeholder="Enter password" required>
                     </div>
                     
                     <div class="form-group">
@@ -297,7 +297,7 @@ smppccm -a
 > host smpp.provider.com
 > port 2775
 > username your_username
-> password your_password
+> password [YOUR_PASSWORD]
 > ok
                 </div>
             </div>

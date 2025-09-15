@@ -58,14 +58,14 @@ cat > "$DEPLOY_DIR/jasmin-server-final.cfg" << 'EOF'
 bind = 0.0.0.0
 port = 1401
 username = jcliadmin
-password = jclipwd
+password = ${JASMIN_HTTP_PASSWORD:-changeme}
 
 # Management CLI Configuration
 [jcli]
 bind = 0.0.0.0
 port = 8990
 username = jcliadmin
-password = jclipwd
+password = ${JASMIN_HTTP_PASSWORD:-changeme}
 
 # SMPP Server Configuration
 [smpp-server]
@@ -93,7 +93,7 @@ db = 0
 host = localhost
 port = 5672
 username = admin
-password = admin123
+password = ${RABBITMQ_PASSWORD:-changeme}
 vhost = /
 spec = /etc/jasmin/resource/amqp0-9-1.xml
 
@@ -185,7 +185,7 @@ echo "  SMPP Server: $(hostname -I | awk '{print $1}'):2775"
 echo ""
 echo "🔐 Default credentials:"
 echo "  Username: jcliadmin"
-echo "  Password: jclipwd"
+echo "  Password: [GENERATED_DURING_INSTALLATION]"
 EOF
 
 chmod +x "$DEPLOY_DIR/deploy-final.sh"
@@ -217,7 +217,7 @@ echo "  SMPP Server: $SERVER_IP:2775"
 echo ""
 echo "🔐 Default credentials:"
 echo "  Username: jcliadmin"
-echo "  Password: jclipwd"
+echo "  Password: [GENERATED_DURING_INSTALLATION]"
 echo ""
 echo "🧪 Test your deployment:"
 echo "  curl http://$SERVER_IP:1401/ping"
