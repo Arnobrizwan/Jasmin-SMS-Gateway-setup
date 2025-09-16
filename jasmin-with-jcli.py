@@ -45,7 +45,7 @@ class SMSGatewayHandler(BaseHTTPRequestHandler):
             content = params.get('content', [''])[0]
             
             # Authentication
-            if username == 'admin' and password == 'admin123':
+            if username == os.getenv('JASMIN_HTTP_USERNAME', 'admin') and password == os.getenv('JASMIN_HTTP_PASSWORD', 'changeme123'):
                 message_id = str(uuid.uuid4())
                 response = {
                     "status": "success",
@@ -99,8 +99,8 @@ class JCLIServer:
             # Read password
             password = client_socket.recv(1024).decode().strip()
             
-            # Authenticate
-            if username == 'admin' and password == 'admin123':
+        # Authenticate
+        if username == os.getenv('JASMIN_CLI_USERNAME', 'admin') and password == os.getenv('JASMIN_CLI_PASSWORD', 'changeme123'):
                 client_socket.send(b"Welcome to Jasmin 0.11.1 console\r\n")
                 client_socket.send(b"Type quit to exit\r\n")
                 client_socket.send(b"jcli : ")

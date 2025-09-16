@@ -24,7 +24,7 @@ fi
 
 # Test SMS Sending
 echo "3. Testing SMS Sending..."
-response=$(curl -s "http://localhost:1401/send?username=admin&password=admin123&to=+1234567890&content=Test%20Message")
+response=$(curl -s "http://localhost:1401/send?username=\${JASMIN_HTTP_USERNAME:-admin}&password=\${JASMIN_HTTP_PASSWORD:-changeme123}&to=+1234567890&content=Test%20Message")
 if echo "$response" | grep -q "success"; then
     echo "   ✅ SMS sending working"
     echo "   Response: $response"
@@ -68,7 +68,7 @@ echo ""
 echo "🔧 Test commands:"
 echo "   curl http://localhost:1401/ping"
 echo "   curl http://localhost:1401/status"
-echo '   curl "http://localhost:1401/send?username=admin&password=admin123&to=+1234567890&content=Hello%20World"'
+echo '   curl "http://localhost:1401/send?username=\${JASMIN_HTTP_USERNAME:-admin}&password=\${JASMIN_HTTP_PASSWORD:-changeme123}&to=+1234567890&content=Hello%20World"'
 echo "   telnet localhost 8990"
 echo ""
 echo "🌐 Access the Py4Web GUI at: http://localhost:8000/jasmin_smsc_gui"

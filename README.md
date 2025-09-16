@@ -91,7 +91,9 @@ Access at: `http://localhost:8080`
 
 ### Default Credentials
 - Username: `admin`
-- Password: `admin123`
+- Password: `changeme123` (change in production!)
+
+**⚠️ Security Note:** Change default passwords before production use!
 
 ## 🧪 Testing
 
@@ -112,7 +114,7 @@ curl http://localhost:1401/ping
 curl http://localhost:1401/status
 
 # Test SMS sending
-curl "http://localhost:1401/send?username=admin&password=admin123&to=+1234567890&content=Hello%20World"
+curl "http://localhost:1401/send?username=admin&password=changeme123&to=+1234567890&content=Hello%20World"
 ```
 
 ## 📁 Project Structure
