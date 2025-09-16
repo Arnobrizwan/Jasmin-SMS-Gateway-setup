@@ -514,7 +514,8 @@ def ping():
 
 if __name__ == '__main__':
     print("🚀 Starting Jasmin Web Panel...")
-    print("📱 Access your SMS gateway at: http://localhost:1401")
+    print("📱 Web Panel: http://localhost:8080")
+    print("🔧 SMS Gateway: http://localhost:1401")
     print("🔐 Default credentials: jcliadmin / jclipwd")
     print("")
     
@@ -536,4 +537,4 @@ if __name__ == '__main__':
         print("❌ Redis is not running")
     
     print("")
-    app.run(host='0.0.0.0', port=1401, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
